@@ -4,7 +4,7 @@ MAINTAINER Tomas Marquez tomas@saiyans.com.ve
 
 CMD ["/bin/bash"] 
 
-ENV container docker
+ENV container=docker
 
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
 systemd-tmpfiles-setup.service ] || rm -f $i; done); \
