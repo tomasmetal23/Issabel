@@ -1,0 +1,57 @@
+
+#Este docker-compose no funcionara si antes no se ha creado la imagen live a partir de la imagen centos con systemd
+#Visita https://hub.docker.com/r/deathmetall/issabel para saber como.
+version: '3.7'
+
+services:
+    # PBX
+    issabel:
+        image: deathmetall/issabel:live
+#        build: ./
+        restart: always
+        network_mode: host
+        cap_add: 
+          - NET_ADMIN
+        privileged: true
+        hostname: pbx.example
+        ports:
+          - "25"    # SMTPS - mostly processing incoming mails
+#          - "22"  # SSH - puerto ssh
+          - "465"    # SMTPS - mostly processing incoming mails
+          - "89"  # HTTP - redirect to https (see options) and authentication for Let's encrypt service
+          - "110"  #  POP3 - standard protocol for accessing mailbox, STARTTLS is required before client auth                                >
+          - "143"  #  IMAP - standard protocol for accessing mailbox, STARTTLS is required before client auth
+          - "8433"  #  HTTPS - access to administration or webmail client
+          - "587"  #  MSA - SMTP port used primarily for email clients after STARTTLS and auth
+          - "993"  #  IMAPS - alternative port for IMAP encrypted since connection
+          - "995"  #  POP3S - encrypted POP3 since connections
+          - "5038" # ASTERISK - puerto usado por asterisk SIP/IAX2
+          - "5060/tcp" # SIP - puerto SIP
+          - "5060/udp" # SIP - puerto SIP
+          - "5061/udp" # SIP - puerto SIP
+          - "5061/tcp" # SIP - puerto SIP
+          - "8001"
+          - "8003"
+          - "8088"
+          - "8089"
+          - "9900/tcp"
+          - "9900/udp"
+          - "10000-10100/tcp"
+          - "10000-10100/udp"
+
+        volumes:
+          - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+          - "issabel-etc:/etc"
+          - "issabel-data:/var/lib"
+          - "./httpd.conf:/etc/httpd/conf/httpd.conf"
+          - "./ssl.conf:/etc/httpd/conf.d/ssl.conf"
+        labels: #disable this labels to start compose wihtout traefik.
+          - "traefik.enable=true"
+          - "traefik.http.routers.issabel.entrypoints=websecure"
+          - "traefik.http.routers.issabel.rule=Host(`pbx.example.com.ve`)"
+          - "traefik.http.routers.issabel.tls.certresolver=lets-encr"  
+          - "traefik.http.services.issabel.loadbalancer.server.port=8433"
+
+volumes:
+  issabel-etc:
+  issabel-data:
