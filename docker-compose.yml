@@ -9,6 +9,7 @@ services:
         image: deathmetall/issabel:live
 #        build: ./
         restart: always
+        container_name: pbx_issabel
         network_mode: host
         cap_add: 
           - NET_ADMIN
@@ -45,12 +46,6 @@ services:
           - "issabel-data:/var/lib"
           - "./httpd.conf:/etc/httpd/conf/httpd.conf"
           - "./ssl.conf:/etc/httpd/conf.d/ssl.conf"
-        labels: #disable this labels to start compose wihtout traefik.
-          - "traefik.enable=true"
-          - "traefik.http.routers.issabel.entrypoints=websecure"
-          - "traefik.http.routers.issabel.rule=Host(`pbx.example.com.ve`)"
-          - "traefik.http.routers.issabel.tls.certresolver=lets-encr"  
-          - "traefik.http.services.issabel.loadbalancer.server.port=8433"
 
 volumes:
   issabel-etc:
