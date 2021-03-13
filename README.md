@@ -39,4 +39,5 @@ $ docker-compose up -d
 <h2>Notes</h2>
 I think that an optimal image for production should have each service separated into another image, example: apache/issabel, mysql/issabel.
 
-https://blogs.saiyans.com.ve
+https://blog.saiyans.com.ve/2020/09/25/pbx-issabel-despliegue-con-docker/
+https://hub.docker.com/repository/docker/deathmetall/issabel
